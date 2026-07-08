@@ -40,8 +40,15 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 
 
 #portal-nav { display:flex; gap:6px; background:rgba(237,231,216,0.06); border-bottom:1px solid rgba(237,231,216,0.15); padding:10px 12px; flex-shrink:0; align-items:stretch; max-width:640px; margin:0 auto; width:100%; box-sizing:border-box; justify-content:center; }
-.portal-nav-btn { flex:1; padding:12px 6px; font-size:13px; font-weight:600; border:none; background:transparent; color:var(--text-muted-on-bg); border-radius:9px; cursor:pointer; font-family:inherit; text-align:center; }
+.portal-nav-btn { flex:1 1 auto; min-width:0; padding:10px 4px; font-size:12px; font-weight:600; border:none; background:transparent; color:var(--text-muted-on-bg); border-radius:9px; cursor:pointer; font-family:inherit; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .portal-nav-btn.active { background:var(--surface); color:var(--text); }
+/* Портал: 5 кнопок должны помещаться на мобильном */
+.portal-nav, .portal-topbar { flex-wrap:wrap; }
+@media (max-width: 420px) {
+  .portal-nav-btn { font-size:11px; padding:9px 3px; letter-spacing:-0.2px; }
+  .portal-nav-home { font-size:12px; padding:0 6px; }
+}
+
 .portal-nav-btn:disabled { opacity:0.4; cursor:default; }
 .portal-nav-btn .pnb-sub { display:block; font-size:10px; font-weight:400; opacity:0.75; margin-top:1px; }
 .portal-nav-home { flex:0 0 auto; padding:0 10px; background:transparent; border:none; color:var(--text-muted-on-bg); border-radius:9px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px; border-right:1px solid rgba(237,231,216,0.15); margin-right:2px; }
@@ -54,7 +61,8 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 #portal-landing { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; position:relative; }
 #portal-landing h1 { font-size:26px; font-weight:500; margin:0 0 6px; color:var(--text-on-bg); }
 #portal-landing .accent-bar { width:40px; height:3px; background:var(--danger); margin:0 0 24px; border-radius:2px; }
-.landing-cards { display:flex; flex-direction:column; gap:12px; width:100%; max-width:340px; }
+.landing-hint {font-size:13px;color:var(--text-muted-on-bg);text-align:center;margin:8px 0 16px;letter-spacing:0.3px;text-transform:uppercase;opacity:0.7}
+    .landing-cards { display:flex; flex-direction:column; gap:12px; width:100%; max-width:340px; }
 .landing-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; cursor:pointer; text-align:left; font-family:inherit; }
 .landing-card:disabled { opacity:0.45; cursor:default; }
 .lc-title { font-size:17px; font-weight:600; color:var(--text); }
@@ -157,14 +165,14 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 
 .prev-btn { background:none; border:1px solid rgba(237,231,216,0.25); color:var(--text-muted-on-bg); font-size:12px; padding:4px 10px; border-radius:6px; cursor:pointer; font-family:inherit; }
 .mini-attribution { font-size:9px; color:var(--text-muted-on-bg); opacity:0.5; text-align:right; margin:-4px 0 8px; }
-.level-tabs { display:flex; gap:6px; background:rgba(237,231,216,0.05); border:1px solid rgba(237,231,216,0.15); border-radius:12px; padding:4px; margin-bottom:16px; }
-.level-tab { flex:1; padding:12px 4px; font-size:14px; font-weight:600; border:none; background:transparent; color:var(--text-muted-on-bg); border-radius:9px; cursor:pointer; font-family:inherit; }
+.level-tabs { display:flex; gap:6px; background:rgba(237,231,216,0.05); border:1px solid rgba(237,231,216,0.15); border-radius:10px; padding:3px; margin-bottom:10px; }
+.level-tab { flex:1; padding: 8px 4px; font-size:14px; font-weight:600; border:none; background:transparent; color:var(--text-muted-on-bg); border-radius:9px; cursor:pointer; font-family:inherit; }
 .level-tab.active { background:var(--surface); color:var(--text); }
 
 .app-verben * { box-sizing: border-box; }
 .app-verben html, .app-verben body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-on-bg); font-size: 16px; line-height: 1.5; }
 .app-verben .container { max-width: 560px; margin: 0 auto; padding: 20px 16px 60px; }
-.app-verben h1 { font-size: 26px; font-weight: 500; margin: 0 0 6px; letter-spacing: -0.02em; color: var(--text-on-bg); }
+.app-verben h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; letter-spacing: -0.02em; color: var(--text-on-bg); }
 .app-verben .subtitle { color: var(--text-muted-on-bg); font-size: 14px; margin: 0 0 20px; font-style: italic; }
 .app-verben .accent-bar { width: 40px; height: 3px; background: var(--danger); margin: 0 0 14px; border-radius: 2px; }
 .app-verben .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
@@ -176,7 +184,7 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .app-verben .main-cta { width: 100%; padding: 20px; background: var(--danger); color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; margin-bottom: 16px; font-family: inherit; }
 .app-verben .main-cta:disabled { opacity: 0.5; cursor: not-allowed; }
 .app-verben .main-cta .cta-hint { display: block; font-size: 12px; font-weight: 400; opacity: 0.9; margin-top: 2px; }
-.app-verben .section-title { font-size: 13px; color: var(--text-muted-on-bg); text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 10px; }
+.app-verben .section-title { font-size: 12px; color: var(--text-muted-on-bg); text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 6px; }
 .app-verben .legend { background: rgba(237,231,216,0.05); border: 1px solid rgba(237,231,216,0.15); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: var(--text-muted-on-bg); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .app-verben .legend .aux-sein, .app-verben .legend .aux-haben { padding: 1px 6px; border-radius: 4px; font-weight: 500; }
 .app-verben .chunks { display: grid; grid-template-columns: 1fr; gap: 8px; }
@@ -192,8 +200,8 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .app-verben .chunk-progress span strong { color: var(--text); font-weight: 600; }
 .app-verben .trainer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: var(--text-on-bg); }
 .app-verben .back-btn { background: none; border: none; color: var(--accent-on-bg); font-size: 14px; padding: 4px 0; cursor: pointer; font-family: inherit; }
-.app-verben .mode-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 12px; }
-.app-verben .mode-tab { flex: 1; padding: 10px 4px; font-size: 12px; font-weight: 500; border: none; background: transparent; color: var(--text-muted); border-radius: 7px; cursor: pointer; font-family: inherit; }
+.app-verben .mode-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; margin-bottom: 8px; }
+.app-verben .mode-tab { flex: 1; padding: 7px 4px; font-size: 12px; font-weight: 500; border: none; background: transparent; color: var(--text-muted); border-radius: 7px; cursor: pointer; font-family: inherit; }
 .app-verben .mode-tab.active { background: var(--accent-bg); color: var(--accent); }
 .app-verben .session-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted-on-bg); margin-bottom: 10px; padding: 0 4px; }
 .app-verben .session-info .badge-info { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 6px; }
@@ -264,9 +272,9 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .app-nomen * {box-sizing:border-box}
 .app-nomen html, .app-nomen body {margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text-on-bg);font-size:16px;line-height:1.5}
 .app-nomen .container {max-width:560px;margin:0 auto;padding:20px 16px 60px;position:relative}
-.app-nomen h1 {font-size:24px;font-weight:500;margin:0 0 6px;letter-spacing:-0.02em}
+.app-nomen h1 {font-size:20px;font-weight:500;margin:0 0 4px;letter-spacing:-0.02em}
 .app-nomen .subtitle {color:var(--text-muted-on-bg);font-size:14px;margin:0 0 20px;font-style:italic}
-.app-nomen .accent-bar {width:40px;height:3px;background:var(--danger);margin:0 0 14px;border-radius:2px}
+.app-nomen .accent-bar {width:32px;height:2px;background:var(--danger);margin:0 0 10px;border-radius:2px}
 .app-nomen /* Level tabs */
 .level-tabs {display:flex;gap:6px;background:rgba(237,231,216,0.05);border:1px solid rgba(237,231,216,0.15);border-radius:12px;padding:4px;margin-bottom:16px}
 .app-nomen .level-tab {flex:1;padding:12px 4px;font-size:14px;font-weight:600;border:none;background:transparent;color:var(--text-muted-on-bg);border-radius:9px;cursor:pointer;font-family:inherit}
@@ -316,9 +324,12 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .app-nomen .trainer-search-box #trainer-search-results {margin-top:6px}
 .app-nomen .back-btn {background:none;border:none;color:var(--accent-on-bg);font-size:14px;padding:4px 0;cursor:pointer;font-family:inherit}
 .app-nomen .trainer-title {font-size:14px;color:var(--text-muted-on-bg)}
-.app-nomen .mode-tabs {display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:12px}
-.app-nomen .mode-tab {flex:1;padding:10px 4px;font-size:12px;font-weight:500;border:none;background:transparent;color:var(--text-muted);border-radius:7px;cursor:pointer;font-family:inherit}
+.app-nomen .mode-tabs {display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:8px}
+.app-nomen .mode-tab {flex:1;padding:7px 4px;font-size:12px;font-weight:500;border:none;background:transparent;color:var(--text-muted);border-radius:7px;cursor:pointer;font-family:inherit}
 .app-nomen .mode-tab.active {background:var(--accent-bg);color:var(--accent)}
+.mode-tab { line-height:1.15; }
+.mode-tab .mode-tab-sub { display:block; font-size:9.5px; font-weight:400; opacity:0.75; margin-top:2px; letter-spacing:-0.1px; white-space:nowrap; }
+
 .app-nomen .session-info {display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-muted-on-bg);margin-bottom:10px;padding:0 4px}
 .app-nomen .prev-btn {background:none;border:1px solid rgba(237,231,216,0.25);color:var(--text-muted-on-bg);font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit}
 .app-nomen .prev-btn:disabled {opacity:0.3;cursor:default}
@@ -618,8 +629,8 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
       color: var(--text-muted-on-bg);
       border: 1px solid rgba(237,231,216,0.2);
       border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 6px 12px;
+      font-size: 12px;
       font-family: inherit;
       cursor: pointer;
       display: block;
@@ -629,7 +640,7 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
     .stats-collapsible.hidden { display: none; }
 
     /* --- Селектор режима на главном экране --- */
-    .mode-selector { margin-bottom: 14px; }
+    .mode-selector { margin-bottom: 10px; }
     .mode-selector-label {
       font-size: 12px;
       color: var(--text-muted-on-bg);
@@ -664,7 +675,7 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .learned-badge .check-mark {color:var(--success, #4ade80); font-weight:700}
 .page-header .search-corner-btn {position:static; top:auto; right:auto}
 /* Секция снизу — свёрнутые списки */
-.bottom-collapsibles {margin-top:20px; padding-top:16px; border-top:1px solid rgba(237,231,216,0.10)}
+.bottom-collapsibles {margin-top:12px; padding-top:10px; border-top:1px solid rgba(237,231,216,0.10)}
 
 </style>
 </head>
@@ -681,11 +692,10 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 
   <div class="portal-pane active" id="portal-pane-landing">
     <div id="portal-landing">
-      <h1>Тренажёр немецкой лексики</h1>
-      <p class="portal-subtitle">По спискам Goethe-Institut</p>
-      <div class="landing-levels"><span>A1</span><span>A2</span><span>B1</span></div>
-      <div class="accent-bar"></div>
+      <div class="landing-hint">Что тренируем?</div>
 
+      
+      
       <button class="search-corner-btn" onclick="togglePortalSearch()">🔍 Поиск слова</button>
       <div class="portal-search-box search-panel hidden" id="portal-search-panel">
         <input type="text" id="portal-search-input" placeholder="Найти слово (нем. или рус.)" autocomplete="off">
@@ -706,7 +716,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
           <div class="lc-title">Наречия и служебные слова <span class="lc-de">(Adverbien)</span></div>
         </button>
       </div>
-      <div class="landing-footer">Educational material · not for commercial use</div>
     </div>
   </div>
 
@@ -736,11 +745,11 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
   </div>
 
   <div class="mode-selector">
-    <div class="mode-selector-label">Как повторять:</div>
+    
     <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="de-ru" onclick="Nomen.setMode('de-ru')" title="Показывается немецкое слово, вспоминаешь русский перевод. Проще всего.">DE → RU</button>
-      <button class="mode-tab" data-mode="ru-de" onclick="Nomen.setMode('ru-de')" title="Показывается русское слово, вспоминаешь немецкое. Сложнее, готовит к разговору.">RU → DE</button>
-      <button class="mode-tab" data-mode="input" onclick="Nomen.setMode('input')" title="Печатаешь ответ вручную с проверкой правописания. Готовит к письменной части экзамена.">Ввод</button>
+      <button class="mode-tab active" data-mode="de-ru" onclick="Nomen.setMode('de-ru')">DE → RU<span class="mode-tab-sub">вижу нем. · говорю рус.</span></button>
+      <button class="mode-tab" data-mode="ru-de" onclick="Nomen.setMode('ru-de')">RU → DE<span class="mode-tab-sub">вижу рус. · говорю нем.</span></button>
+      <button class="mode-tab" data-mode="input" onclick="Nomen.setMode('input')">Ввод<span class="mode-tab-sub">печатаю нем.</span></button>
     </div>
   </div>
 
@@ -770,7 +779,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
     </div>
   </div>
 
-  <div class="footer-note">Educational material · not for commercial use</div>
 </div>
 
 <!-- TRAINER SCREEN -->
@@ -799,11 +807,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
     <span id="status-badge"></span>
   </div>
 
-  <div class="color-legend-hint hidden" id="nomen-color-legend">
-    <span>💡 <b>Красным и жирным</b> выделены различия между ед.ч. и мн.ч. — умлаут в основе и окончание.</span>
-    <button class="color-legend-close" onclick="dismissColorLegend()" aria-label="Закрыть">×</button>
-  </div>
-
   <div id="card-container"></div>
 </div>
 
@@ -826,7 +829,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
         <button class="search-corner-btn" onclick="toggleVerbSearch()">🔍 Поиск</button>
       </div>
     </div>
-    <div class="accent-bar"></div>
     <div class="search-box search-panel hidden" id="verben-search-panel">
       <input type="text" id="verb-search-input" placeholder="Найти слово (нем. или рус.)" autocomplete="off">
       <div id="verb-search-results"></div>
@@ -839,12 +841,12 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
     </div>
 
     <div class="mode-selector">
-      <div class="mode-selector-label">Как повторять:</div>
+      
       <div class="mode-tabs">
-        <button class="mode-tab active" data-mode="showDe" onclick="Verben.setMode('showDe')" title="Показывается немецкий глагол, вспоминаешь русский перевод. Проще всего.">DE → RU</button>
-        <button class="mode-tab" data-mode="showRu" onclick="Verben.setMode('showRu')" title="Показывается русский глагол, вспоминаешь немецкий. Сложнее, готовит к разговору.">RU → DE</button>
-        <button class="mode-tab" data-mode="type" onclick="Verben.setMode('type')" title="Печатаешь ответ вручную с проверкой правописания. Готовит к письменной части экзамена.">Ввод</button>
-        <button class="mode-tab" data-mode="forms" onclick="Verben.setMode('forms')" title="Тренируешь три главные формы глагола: настоящее (Präsens), простое прошедшее (Präteritum), сложное прошедшее (Perfekt).">Формы</button>
+        <button class="mode-tab active" data-mode="showDe" onclick="Verben.setMode('showDe')">DE → RU<span class="mode-tab-sub">вижу нем. · говорю рус.</span></button>
+        <button class="mode-tab" data-mode="showRu" onclick="Verben.setMode('showRu')">RU → DE<span class="mode-tab-sub">вижу рус. · говорю нем.</span></button>
+        <button class="mode-tab" data-mode="type" onclick="Verben.setMode('type')">Ввод<span class="mode-tab-sub">печатаю нем.</span></button>
+        <button class="mode-tab" data-mode="forms" onclick="Verben.setMode('forms')">Формы<span class="mode-tab-sub">Präsens · Präteritum · Perfekt</span></button>
       </div>
     </div>
 
@@ -864,7 +866,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
       <button id="global-reset">Сбросить прогресс</button>
       <button id="unremove-btn" style="display:none">Вернуть убранные</button>
     </div>
-    <div style="margin-top:16px;font-size:11px;color:var(--text-muted-on-bg);text-align:center;font-style:italic">Educational material · not for commercial use</div>
   
     <div class="bottom-collapsibles">
   <button class="stats-toggle" id="verben-learned-toggle" onclick="Verben.toggleLearnedList()">Мои выученные слова (0) ▾</button>
@@ -995,7 +996,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
       <button class="search-corner-btn" onclick="toggleAdjSearch()">🔍 Поиск</button>
     </div>
   </div>
-  <div class="accent-bar"></div>
   <div class="search-box search-panel hidden" id="adj-search-panel">
     <input type="text" id="adj-search-input" placeholder="Найти слово (нем. или рус.)" autocomplete="off">
     <div id="adj-search-results"></div>
@@ -1008,18 +1008,17 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
   </div>
 
   <div class="mode-selector">
-    <div class="mode-selector-label">Как повторять:</div>
+    
     <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="showDe" onclick="Adjektive.setMode('showDe')" title="Показывается немецкое прилагательное, вспоминаешь русский перевод. Проще всего.">DE → RU</button>
-      <button class="mode-tab" data-mode="showRu" onclick="Adjektive.setMode('showRu')" title="Показывается русское прилагательное, вспоминаешь немецкое. Сложнее, готовит к разговору.">RU → DE</button>
-      <button class="mode-tab" data-mode="type" onclick="Adjektive.setMode('type')" title="Печатаешь ответ вручную с проверкой правописания. Готовит к письменной части экзамена.">Ввод</button>
+      <button class="mode-tab active" data-mode="showDe" onclick="Adjektive.setMode('showDe')">DE → RU<span class="mode-tab-sub">вижу нем. · говорю рус.</span></button>
+      <button class="mode-tab" data-mode="showRu" onclick="Adjektive.setMode('showRu')">RU → DE<span class="mode-tab-sub">вижу рус. · говорю нем.</span></button>
+      <button class="mode-tab" data-mode="type" onclick="Adjektive.setMode('type')">Ввод<span class="mode-tab-sub">печатаю нем.</span></button>
     </div>
   </div>
 
 
 
   <div class="chunks" id="adj-regularity-cards"></div>
-  <div style="margin-top:16px;font-size:11px;color:var(--text-muted-on-bg);text-align:center;font-style:italic">Educational material · not for commercial use</div>
 
   <div class="bottom-collapsibles">
 <button class="stats-toggle" id="adj-learned-toggle" onclick="Adjektive.toggleLearnedList()">Мои выученные слова (0) ▾</button>
@@ -1139,7 +1138,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
       <button class="search-corner-btn" onclick="toggleKleinSearch()">🔍 Поиск</button>
     </div>
   </div>
-  <div class="accent-bar"></div>
   <div class="search-box search-panel hidden" id="klein-search-panel">
     <input type="text" id="klein-search-input" placeholder="Найти слово (нем. или рус.)" autocomplete="off">
     <div id="klein-search-results"></div>
@@ -1176,11 +1174,11 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
   </div>
 
   <div class="mode-selector">
-    <div class="mode-selector-label">Как повторять:</div>
+    
     <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="showDe" onclick="Kleinwoerter.setMode('showDe')">DE → RU</button>
-      <button class="mode-tab" data-mode="showRu" onclick="Kleinwoerter.setMode('showRu')">RU → DE</button>
-      <button class="mode-tab" data-mode="type" onclick="Kleinwoerter.setMode('type')">Ввод</button>
+      <button class="mode-tab active" data-mode="showDe" onclick="Kleinwoerter.setMode('showDe')">DE → RU<span class="mode-tab-sub">вижу нем. · говорю рус.</span></button>
+      <button class="mode-tab" data-mode="showRu" onclick="Kleinwoerter.setMode('showRu')">RU → DE<span class="mode-tab-sub">вижу рус. · говорю нем.</span></button>
+      <button class="mode-tab" data-mode="type" onclick="Kleinwoerter.setMode('type')">Ввод<span class="mode-tab-sub">печатаю нем.</span></button>
     </div>
   </div>
 
@@ -1188,7 +1186,6 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 
 
 
-  <div style="margin-top:16px;font-size:11px;color:var(--text-muted-on-bg);text-align:center;font-style:italic">Educational material · not for commercial use</div>
 
   <div class="bottom-collapsibles">
 <button class="stats-toggle" id="klein-learned-toggle" onclick="Kleinwoerter.toggleLearnedList()">Мои выученные слова (0) ▾</button>
@@ -1549,7 +1546,7 @@ const TOPIC_ORDER = NOUNS_DATA.topic_order;
 NOUNS.forEach((n, i) => { n.id = i; });
 
 // ============ STATE ============
-let currentLevel = 'A1';
+let currentLevel = (function() { try { return localStorage.getItem('deutsch_nomen_last_level') || 'A1'; } catch(e) { return 'A1'; } })();
 let currentTopic = null;      // null = все темы уровня
 let currentMode = 'de-ru'; // de-ru | ru-de | input | plural
 let session = null;
@@ -1752,6 +1749,7 @@ function renderTopics() {
 
 function setLevel(lvl) {
   currentLevel = lvl;
+  try { localStorage.setItem('deutsch_nomen_last_level', lvl); } catch(e) {}
   currentTopic = null;
   document.querySelectorAll('.level-tab').forEach(t => t.classList.toggle('active', t.dataset.level === lvl));
   renderHome();
@@ -1900,12 +1898,8 @@ function renderCard() {
   const s = getSRS(noun.id);
   document.getElementById('progress').textContent = `${session.idx + 1} / ${session.queue.length}`;
   document.getElementById('prev-btn').disabled = false;
-  // Badge
-  let badge = '';
-  if (s.seen === 0) badge = '<span class="badge-info badge-new">Новое</span>';
-  else if (s.level <= 1) badge = '<span class="badge-info badge-difficult">Трудное</span>';
-  else if (s.due < Date.now() - 86400000) badge = '<span class="badge-info badge-overdue">Просрочено</span>';
-  document.getElementById('status-badge').innerHTML = badge;
+  // Badge удалён по запросу пользователя (визуальный шум)
+  document.getElementById('status-badge').innerHTML = '';
 
   const stars = '★★★★★';
   const starsHTML = `<span class="stars-display">${stars.substring(0, s.level)}<span class="star-off">${stars.substring(s.level)}</span></span>`;
@@ -1981,7 +1975,6 @@ function renderDeRuMode(noun, s, starsHTML) {
     <div class="card">
       <div class="prompt-label">Значение</div>
       <div class="word-main">${formatBothForms(noun, true)}</div>
-      ${noun.pl && noun.pl !== noun.sg ? '<div class="diff-legend">Красным подсвечено то, что меняется во множественном числе.</div>' : ''}
       ${starsHTML}
     </div>
     ${renderGradeButtons()}
@@ -2017,7 +2010,6 @@ function renderRuDeMode(noun, s, starsHTML) {
       <div class="prompt-label">Значение</div>
       <div class="word-main">${escapeHTML(noun.ru)}</div>
       <div class="word-answer">${formatBothForms(noun, true)}</div>
-      ${noun.pl && noun.pl !== noun.sg ? '<div class="diff-legend">Красным подсвечено то, что меняется во множественном числе.</div>' : ''}
       ${starsHTML}
     </div>
     ${renderGradeButtons()}
@@ -2349,7 +2341,7 @@ const INTERVAL_LABELS = {
 const DIFFICULT_THRESHOLD = 3;
 
 let progress = { words: {} };
-let currentLevel = 'A1';
+let currentLevel = (function() { try { return localStorage.getItem('deutsch_verben_last_level') || 'A1'; } catch(e) { return 'A1'; } })();
 let currentRegular = true;
 let currentMode = 'showDe';
 let queue = [];
@@ -2530,7 +2522,7 @@ function renderMenu() {
 }
 
 document.querySelectorAll('.level-tab').forEach(btn => {
-  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; renderMenu(); updateLearnedList(); });
+  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_verben_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
 function buildSessionQueue(level, regular) {
@@ -2613,12 +2605,8 @@ function showNext() {
   currentCard = CARDS.find(c => c.id === queue[queueIdx]);
   const w = getWord(currentCard.de);
   const now = Date.now();
-  let badge = '';
-  if (w.difficult) badge = '<span class="badge-info badge-difficult">трудное</span>';
-  else if (w.stars > 0 && w.nextDue <= now) badge = '<span class="badge-info badge-overdue">повтор</span>';
-  else if (w.stars === 0) badge = '<span class="badge-info badge-new">новое</span>';
   document.getElementById('session-progress').textContent = (queueIdx + 1) + ' / ' + queue.length;
-  document.getElementById('session-badge').innerHTML = badge;
+  document.getElementById('session-badge').innerHTML = '';
   phase = 'prompt';
   if (currentMode === 'showDe') {
     document.getElementById('prompt-label').textContent = 'Инфинитив';
@@ -2949,7 +2937,7 @@ const INTERVALS_MS = [24*60*60*1000, 3*24*60*60*1000, 7*24*60*60*1000, 14*24*60*
 const INTERVAL_LABELS = ['1 день','3 дня','7 дней','14 дней','30 дней'];
 
 let progress = { words: {} };
-let currentLevel = 'A1';
+let currentLevel = (function() { try { return localStorage.getItem('deutsch_adj_last_level') || 'A1'; } catch(e) { return 'A1'; } })();
 let currentRegular = true;
 let currentMode = 'showDe';
 let queue = [];
@@ -3042,7 +3030,7 @@ function renderMenu() {
   });
 }
 document.querySelectorAll('.level-tab').forEach(btn => {
-  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; renderMenu(); updateLearnedList(); });
+  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_adj_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
 function buildSessionQueue(level, regular) {
@@ -3129,12 +3117,8 @@ function showNext() {
   currentCard = CARDS.find(c => c.id === queue[queueIdx]);
   const w = getWord(currentCard.de);
   const now = Date.now();
-  let badge = '';
-  if (w.difficult) badge = '<span class="badge-info badge-difficult">трудное</span>';
-  else if (w.stars > 0 && w.nextDue <= now) badge = '<span class="badge-info badge-overdue">повтор</span>';
-  else if (w.stars === 0) badge = '<span class="badge-info badge-new">новое</span>';
   document.getElementById('adj-session-progress').textContent = (queueIdx+1) + ' / ' + queue.length;
-  document.getElementById('adj-session-badge').innerHTML = badge;
+  document.getElementById('adj-session-badge').innerHTML = '';
   phase = 'prompt';
 
   if (currentMode === 'showDe') {
@@ -3426,7 +3410,7 @@ const INTERVALS_MS = [24*60*60*1000, 3*24*60*60*1000, 7*24*60*60*1000, 14*24*60*
 const INTERVAL_LABELS = ['1 день','3 дня','7 дней','14 дней','30 дней'];
 
 let progress = { words: {} };
-let currentLevel = 'A1';
+let currentLevel = (function() { try { return localStorage.getItem('deutsch_klein_last_level') || 'A1'; } catch(e) { return 'A1'; } })();
 let currentMode = 'showDe';
 let currentCategoryMode = 'adverbien'; // 'adverbien' | 'funktionswoerter'
 let currentSubcategory = 'all'; // для funktionswoerter: all|präp|konj|pron|part|num
@@ -3592,7 +3576,7 @@ function renderMenu() {
   document.querySelectorAll('.level-tab').forEach(b => b.classList.toggle('active', b.dataset.level === currentLevel));
 }
 document.querySelectorAll('.level-tab').forEach(btn => {
-  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; renderMenu(); updateLearnedList(); });
+  btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_klein_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
 function buildSessionQueue(level) {
@@ -3676,13 +3660,8 @@ function showNext() {
   }
   currentCard = CARDS.find(c => c.id === queue[queueIdx]);
   const w = getWord(currentCard.de);
-  const now = Date.now();
-  let badge = '';
-  if (w.difficult) badge = '<span class="badge-info badge-difficult">трудное</span>';
-  else if (w.stars>0 && w.nextDue<=now) badge = '<span class="badge-info badge-overdue">повтор</span>';
-  else if (w.stars===0) badge = '<span class="badge-info badge-new">новое</span>';
   document.getElementById('klein-session-progress').textContent = (queueIdx+1)+' / '+queue.length;
-  document.getElementById('klein-session-badge').innerHTML = badge;
+  document.getElementById('klein-session-badge').innerHTML = '';
 
   if (currentMode === 'showDe') {
     document.getElementById('klein-prompt-label').textContent = 'Слово';
@@ -3896,7 +3875,6 @@ updateLearnedList();
     <button class="reset-progress-btn" onclick="resetAllProgress()">Начать заново</button>
     <button class="reset-progress-btn" style="margin-left:8px;background:var(--accent)" onclick="hideInfoModal(); showRemindersModal()">Настроить напоминания</button>
 
-    <p style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(23,67,75,0.15);font-size:13px;text-align:center;color:rgba(23,67,75,0.85)">Educational material · not for commercial use</p>
   </div>
 </div>
 
@@ -3940,110 +3918,110 @@ function helpContent(ctx) {
   if (ctx === 'landing') {
     return `
       <h2>💡 Как это работает</h2>
-      <h3>Что это</h3>
-      <p>Тренажёр для подготовки к экзаменам Goethe-Zertifikat A1, A2, B1. Внутри — весь официальный словарный список Института Гёте.</p>
-      <hr class="help-hr">
-      <h3>Как учит слова</h3>
-      <p>Метод основан на принципе <b>интервальных повторений</b>: слово, которое пора вспомнить, показывается снова, а слово, которое уже освоено, откладывается надолго. Такой ритм закрепляет память эффективнее, чем зазубривание.</p>
-
-      <p><b>Внутри одного подхода.</b> Пока слово не запомнилось, оно возвращается в конец очереди этого же подхода и появляется снова через несколько других карточек. Это активное закрепление за один сеанс.</p>
-
-      <p><b>По дням.</b> После первого правильного ответа слово переходит в дневной ритм: <b>1 день → 3 дня → 7 дней → 14 дней → 30 дней</b>. За пять успешных повторений слово прочно уходит в долгую память.</p>
-
-      <p><b>При ошибке.</b> Слово не сбрасывается до нуля — только на один уровень вниз, и возвращается в конец текущего подхода для повторного показа. Одна неудача не стирает всю пройденную работу.</p>
+      <h3>Что делать</h3>
+      <p><b>1.</b> Выбрать модуль сверху: Существительные, Глаголы, Прилагательные, Наречия или Служебные.</p>
+      <p><b>2.</b> Выбрать уровень: A1 → A2 → B1.</p>
+      <p><b>3.</b> Нажать <b>«Изучить 10 слов»</b> — приложение само подберёт 10 подходящих карточек.</p>
+      <p><b>4.</b> На каждой карточке: увидеть слово → вспомнить в уме перевод → тапнуть <b>«Показать перевод»</b> → нажать <b>✓ Знаю</b> или <b>✗ Не знаю</b>.</p>
+      <p>Один подход занимает 3–5 минут. Мало — в конце жмёшь <b>«Следующие 10»</b>.</p>
 
       <hr class="help-hr">
-      <h3>Как проходит подход</h3>
-      <p>За один раз — <b>10 слов</b>. Приложение сначала даёт те, которые пора вспомнить, потом добавляет новые. Один подход занимает 3–5 минут. Если мало, в конце — кнопка <b>«Следующие 10»</b>, можно подряд.</p>
+      <h3>Что происходит после ответа</h3>
+      <p><b>✓ Знаю</b> — слово получает звезду и уходит в дневной ритм: 1 день → 3 дня → 7 дней → 14 дней → 30 дней. После пяти правильных ответов слово прочно закрепляется.</p>
+      <p><b>✗ Не знаю</b> — слово падает на одну звезду вниз и возвращается в конец текущей десятки. Одна ошибка не стирает всю работу.</p>
 
       <hr class="help-hr">
       <h3>С чего начать</h3>
-      <p>Существительные → уровень A1 → <b>«Изучить 10 слов»</b>. Первые слова уже ждут.</p>
+      <p>Существительные → уровень A1 → <b>«Изучить 10 слов»</b>. Первые 10 слов уже готовы.</p>
       `;
   }
   if (ctx === 'nomen-home') {
     return `
       <h2>💡 Существительные (Nomen)</h2>
-      <p><b>На этой странице собраны все существительные</b> из словаря Goethe — 1792 слова.</p>
+      <h3>Что делать</h3>
+      <p><b>Нажать «Изучить 10 слов»</b> — приложение само подберёт 10 подходящих карточек из всех тем.</p>
+      <p><b>Или открыть тему</b> внизу (Семья, Еда, Работа...) — тогда 10 слов будут только из этой темы.</p>
       <hr class="help-hr">
-      <h3>Что можно сделать на этой странице</h3>
-      <ul>
-        <li><b>Выбрать уровень</b> — A1, A2 или B1. Активный уровень подсвечен.</li>
-        <li><b>Начать подход из 10 слов</b> — большая кнопка «Изучить 10 слов». Приложение само выберет 10 подходящих слов из всех тем уровня.</li>
-        <li><b>Открыть конкретную тему</b> — Семья, Еда, Работа и другие ниже. В подходе будут только слова этой темы.</li>
-        <li><b>Найти нужное слово</b> — иконка «🔍 Поиск слова» в правом верхнем углу.</li>
-        <li><b>Посмотреть свои выученные слова</b> — раздел «Мои выученные слова» с полным списком.</li>
-      </ul>
+      <h3>Что проверяется на карточке</h3>
+      <p>Артикль (der/die/das), формы единственного и множественного числа, перевод. У профессий — парная форма по роду (Freund/Freundin).</p>
       <hr class="help-hr">
-      <p class="help-note">На карточках проверяется всё, что нужно знать про существительное на экзамене: артикль (der/die/das), формы единственного и множественного числа, перевод, парные формы по роду (Freund/Freundin — друг/подруга).</p>
+      <h3>Настройки сверху</h3>
+      <p><b>A1 / A2 / B1</b> — уровень словаря.<br>
+      <b>DE → RU / RU → DE / Ввод</b> — как показать слово (см. подпись под кнопками).<br>
+      <b>🔍 Поиск</b> — найти конкретное слово.<br>
+      <b>✓ N</b> в шапке — сколько слов уже выучено на 5★.</p>
       `;
   }
   if (ctx === 'nomen-trainer') {
     return `
       <h2>💡 Как отвечать на карточке</h2>
-      <p>Показывается слово — вспомни в уме перевод и формы. <b>Тапни карточку</b>, чтобы увидеть ответ. Оцени: <b>✓ Знаю</b> или <b>✗ Не знаю</b>. От оценки зависит, когда слово вернётся: при правильном ответе оно уйдёт надолго, при ошибке — вернётся скоро.</p>
+      <p><b>1.</b> Видишь слово — вспомни в уме перевод и формы.</p>
+      <p><b>2.</b> Тапни <b>«Показать перевод»</b> — появится правильный ответ.</p>
+      <p><b>3.</b> Нажми:<br>
+      <b>✓ Знаю</b> — если вспомнила правильно;<br>
+      <b>✗ Не знаю</b> — если ошиблась или забыла.</p>
       <hr class="help-hr">
-      <h3>Три режима сверху</h3>
-      <ul>
-        <li><b>DE → RU</b> — показывается немецкое слово, нужно вспомнить русский перевод. Самый простой режим.</li>
-        <li><b>RU → DE</b> — показывается русское слово, нужно вспомнить немецкое. Сложнее, готовит к разговору.</li>
-        <li><b>Ввод</b> — печатается ответ вручную с проверкой правописания. Готовит к письменной части экзамена.</li>
-      </ul>
-      <p class="help-note">Красным на карточке ответа подсвечено то, что меняется во множественном числе — умлаут в основе и окончание.</p>
+      <p>От ответа зависит, когда слово вернётся: правильно — уйдёт надолго, ошибка — вернётся скоро.</p>
+      <hr class="help-hr">
+      <h3>Режимы сверху</h3>
+      <p><b>DE → RU</b> — показывается немецкое, говоришь русский перевод. Самый простой.<br>
+      <b>RU → DE</b> — показывается русский, вспоминаешь немецкое. Сложнее.<br>
+      <b>Ввод</b> — печатаешь ответ вручную, приложение проверяет правописание.</p>
       `;
   }
   if (ctx === 'verben-home') {
     return `
       <h2>💡 Глаголы (Verben)</h2>
-      <p><b>На этой странице собраны все глаголы</b> из словаря Goethe — 669 слов.</p>
-      <hr class="help-hr">
-      <h3>Что можно сделать на этой странице</h3>
+      <h3>Что делать</h3>
+      <p><b>Выбрать группу</b>: «Правильные» или «Неправильные».</p>
       <ul>
-        <li><b>Выбрать уровень</b> — A1, A2 или B1.</li>
-        <li><b>Выбрать группу глаголов:</b>
-          <ul>
-            <li><b>Правильные</b> — склоняются по обычным правилам (machen → machte → hat gemacht). Проще запомнить: одно окончание — и всё встаёт на место.</li>
-            <li><b>Неправильные</b> — каждый нужно учить отдельно (gehen → ging → ist gegangen). На уровне A1 их чуть больше половины, поэтому это первое, чем стоит заняться.</li>
-          </ul>
-        </li>
-        <li><b>Начать подход из 10 глаголов</b> в выбранной группе.</li>
-        <li><b>Посмотреть свои выученные глаголы</b> — раздел «Мои выученные слова».</li>
+        <li><b>Правильные</b> — склоняются по правилу (machen → machte → hat gemacht). Проще запомнить.</li>
+        <li><b>Неправильные</b> — каждый учится отдельно (gehen → ging → ist gegangen). На A1 их больше половины — начинай с них.</li>
       </ul>
+      <p><b>Нажать на группу</b> — начнётся подход из 10 глаголов этой группы.</p>
       <hr class="help-hr">
-      <p class="help-note">На карточках проверяются три главные формы, которые нужны на экзамене: настоящее время (Präsens), простое прошедшее (Präteritum) и сложное прошедшее (Perfekt) — с нужным вспомогательным глаголом haben или sein.</p>
+      <h3>Что проверяется на карточке</h3>
+      <p>Три главные формы: настоящее (Präsens), простое прошедшее (Präteritum), сложное прошедшее (Perfekt) — с haben или sein.</p>
+      <hr class="help-hr">
+      <h3>Настройки сверху</h3>
+      <p><b>A1 / A2 / B1</b> — уровень.<br>
+      <b>DE→RU / RU→DE / Ввод / Формы</b> — как показывается слово (подпись под кнопкой).<br>
+      <b>🔍 Поиск</b> — найти глагол.<br>
+      <b>✓ N</b> — выученные на 5★.</p>
       `;
   }
   if (ctx === 'adj-home') {
     return `
       <h2>💡 Прилагательные (Adjektive)</h2>
-      <p><b>На этой странице собраны все прилагательные</b> из словаря Goethe — 385 слов.</p>
-      <hr class="help-hr">
-      <h3>Что можно сделать на этой странице</h3>
+      <h3>Что делать</h3>
+      <p><b>Нажать на группу</b> внизу:</p>
       <ul>
-        <li><b>Выбрать уровень</b> — A1, A2 или B1.</li>
-        <li><b>Начать подход из 10 прилагательных</b> — большая кнопка внизу.</li>
-        <li><b>Найти нужное слово</b> — если ищешь что-то конкретное.</li>
-        <li><b>Посмотреть свои выученные прилагательные</b> — раздел «Мои выученные слова».</li>
+        <li><b>Обычная степень</b> — 300+ прилагательных со стандартным склонением (+er / +(e)st). Основная тренировка.</li>
+        <li><b>Исключения</b> — 5 нестандартных: <b>groß, gut, viel, hoch, nah</b>. У них степени сравнения нерегулярные.</li>
       </ul>
       <hr class="help-hr">
-      <p class="help-note">Тренируется перевод и написание прилагательных в положительной степени (Positiv). Степени сравнения — Komparativ (например, größer «больше») и Superlativ (am größten «самый большой») — показываются только для нестандартных случаев: groß, gut, viel, hoch, nah и подобных. Для обычных прилагательных степени не показываются: правило одно (+er / +(e)st), запоминать отдельно каждое слово не нужно.</p>
+      <h3>Что проверяется на карточке</h3>
+      <p>Перевод и написание слова в положительной степени (Positiv). Komparativ и Superlativ показываются только для нестандартных случаев — для обычных правило одно (+er / +(e)st), тренировать не нужно.</p>
+      <hr class="help-hr">
+      <h3>Настройки сверху</h3>
+      <p><b>A1 / A2 / B1</b> — уровень.<br>
+      <b>DE→RU / RU→DE / Ввод</b> — как показывается слово (подпись под кнопкой).<br>
+      <b>🔍 Поиск</b> — найти прилагательное.<br>
+      <b>✓ N</b> — выученные на 5★.</p>
       `;
   }
   if (ctx === 'klein-home') {
     return `
-      <h2>💡 Наречия и служебные слова (Adverbien / Funktionswörter)</h2>
-      <p><b>На этой странице собраны неизменяемые слова</b> из словаря Goethe: наречия (heute «сегодня», oft «часто»), союзы (aber «но», weil «потому что»), частицы (doch, denn), местоимения (etwas «что-то», nichts «ничего»), отрицания (nicht, nein).</p>
+      <h2>💡 Наречия и служебные слова</h2>
+      <p><b>Наречия</b> (Adverbien) — heute «сегодня», oft «часто», gestern «вчера».<br>
+      <b>Служебные</b> (Funktionswörter) — предлоги (in, mit, für), союзы (aber, weil, dass), местоимения (etwas, nichts), частицы (doch, denn), числительные.</p>
       <hr class="help-hr">
-      <h3>Что можно сделать на этой странице</h3>
-      <ul>
-        <li><b>Выбрать уровень</b> — A1, A2 или B1.</li>
-        <li><b>Выбрать подкатегорию</b> — предлоги, союзы, местоимения, частицы, числительные. Для предлогов доступен фильтр по падежу.</li>
-        <li><b>Начать подход из 10 слов</b>.</li>
-        <li><b>Найти нужное слово</b> — если ищешь конкретное.</li>
-        <li><b>Посмотреть свои выученные слова</b> — раздел «Мои выученные слова».</li>
-      </ul>
+      <h3>Что делать</h3>
+      <p><b>Выбрать подкатегорию</b> в списке — все, предлоги, союзы, местоимения и т.д. Для предлогов есть фильтр по падежу.</p>
+      <p><b>Нажать «Начать (10 слов)»</b> — начнётся подход.</p>
       <hr class="help-hr">
-      <p class="help-note">Эти слова не меняют формы, поэтому работать с ними проще — только перевод в двух направлениях (DE → RU и RU → DE) и режим «Ввод», если хочется печатать вручную.</p>
+      <h3>Что проверяется на карточке</h3>
+      <p>Только перевод — эти слова не меняют формы. Три режима: DE→RU, RU→DE, Ввод.</p>
       `;
   }
   // Fallback
@@ -4159,6 +4137,25 @@ function resetAllProgress() {
   alert('Прогресс сброшен. Обновите страницу.');
   location.reload();
 }
+
+// Восстановление активного уровня в UI после чтения из localStorage
+document.addEventListener('DOMContentLoaded', () => {
+  const modules = [
+    { prefix: 'nomen', obj: window.Nomen, tabsSelector: '#portal-pane-nomen .level-tab' },
+    { prefix: 'verben', obj: window.Verben, tabsSelector: '#portal-pane-verben .level-tab' },
+    { prefix: 'adj', obj: window.Adjektive, tabsSelector: '#portal-pane-kw .level-tab' },
+    { prefix: 'klein', obj: window.Kleinwoerter, tabsSelector: '#portal-pane-klein .level-tab' }
+  ];
+  modules.forEach(m => {
+    try {
+      const savedLevel = localStorage.getItem('deutsch_' + m.prefix + '_last_level');
+      if (!savedLevel) return;
+      document.querySelectorAll(m.tabsSelector).forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.level === savedLevel);
+      });
+    } catch (e) {}
+  });
+});
 </script>
 
 
