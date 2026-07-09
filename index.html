@@ -1393,6 +1393,23 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   <button class="lt-open" id="learned-toast-open">Открыть список</button>
 </div>
 <script>
+// Дата ближайшего повторения словами: «сегодня», «завтра», «12 июля».
+// Часы и минуты не показываем: точность здесь не нужна и создаёт шум.
+window.DT_formatDue = function(ts) {
+  if (!isFinite(ts)) return '';
+  const MONTHS = ['января','февраля','марта','апреля','мая','июня',
+                  'июля','августа','сентября','октября','ноября','декабря'];
+  const d = new Date(ts);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const day = new Date(d); day.setHours(0, 0, 0, 0);
+  const diff = Math.round((day - today) / 86400000);
+  if (diff <= 0) return 'сегодня';
+  if (diff === 1) return 'завтра';
+  return d.getDate() + ' ' + MONTHS[d.getMonth()];
+};
+</script>
+
+<script>
 (function(){
   let _toastTimer = null;
   window.showLearnedToast = function(word, moduleKey) {
@@ -2045,7 +2062,6 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 </div>
 </div>
   </div>
-</div>
 
 <div class="portal-pane" id="portal-pane-learned">
 <div class="app-verben">
@@ -2096,6 +2112,8 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 </div>
 </div>
 </div>
+<!-- /#app-shell — панель выученных слов обязана быть внутри оболочки -->
+</div>
 
 <script>
 function updateHelpFabVisibility() {
@@ -2144,7 +2162,10 @@ function openLearnedView(focus) {
     _showLearnedPortalView();
   }
   if (typeof updateHelpFabVisibility === 'function') updateHelpFabVisibility();
-  window.scrollTo({top:0, behavior:'auto'});
+  // Панель — собственный контейнер прокрутки (.portal-pane { overflow-y:auto }).
+  // Скроллить окно бессмысленно: окно не прокручивается.
+  const pane = document.getElementById('portal-pane-learned');
+  if (pane) pane.scrollTop = 0;
 }
 
 function _showLearnedPortalView() {
@@ -2877,8 +2898,68 @@ function openTopic(topicCode) {
   const target = 10;
   const picked = [...dueOnly.slice(0, target)];
   if (picked.length < target) picked.push(...newOnly.slice(0, target - picked.length));
-  if (picked.length === 0) return;
+  // Слова, пройденные ранее, но чей срок ещё не подошёл, не входят ни в dueOnly,
+  // ни в newOnly. Если вся тема в таком состоянии — показать это, а не молчать.
+  if (picked.length === 0) { showNothingDue(pool, TOPIC_INFO[topicCode]); return; }
   startSession(picked);
+}
+
+// Экран «всё повторено». Открывается вместо тишины, когда набрать сессию не из чего.
+function showNothingDue(pool, title) {
+  session = null;
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('trainer').style.display = 'block';
+  document.getElementById('trainer-title').textContent = title || currentLevel;
+  const pane = document.getElementById('portal-pane-nomen');
+  const tabs = pane.querySelector('.mode-tabs');
+  const info = pane.querySelector('.session-info');
+  if (tabs) tabs.style.display = 'none';
+  if (info) info.style.display = 'none';
+  const badge = document.getElementById('status-badge');
+  if (badge) badge.innerHTML = '';
+
+  const soonest = pool.slice().sort((a, b) => getSRS(a.id).due - getSRS(b.id).due)[0];
+  const when = soonest ? formatDueDate(getSRS(soonest.id).due) : '';
+
+  document.getElementById('card-container').innerHTML = `
+    <div class="card">
+      <div class="prompt-label">Ничего не ждёт повторения</div>
+      <div class="word-main">Всё пройдено</div>
+      <div class="word-hint">${when ? 'Ближайшее слово вернётся ' + when + '.' : ''}
+        Интервал нужен, чтобы слово успело забыться — только тогда повторение работает.</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-accent" onclick="Nomen.reviewAnyway()">Повторить не дожидаясь срока</button>
+      <button class="btn" onclick="Nomen.backHome()">Назад</button>
+    </div>
+  `;
+}
+
+// Пересмотреть слова раньше срока — по осознанному выбору, а не автоматически.
+function reviewAnyway() {
+  const pool = currentTopic ? filterByTopic(currentLevel, currentTopic) : filterByLevel(currentLevel);
+  if (pool.length === 0) return;
+  const soonest = pool.slice().sort((a, b) => getSRS(a.id).due - getSRS(b.id).due).slice(0, 10);
+  const pane = document.getElementById('portal-pane-nomen');
+  const tabs = pane.querySelector('.mode-tabs');
+  const info = pane.querySelector('.session-info');
+  if (tabs) tabs.style.display = '';
+  if (info) info.style.display = '';
+  startSession(soonest);
+}
+
+// «12 июля», «сегодня», «завтра» — без часов и минут: точность здесь не нужна.
+function formatDueDate(ts) {
+  if (!isFinite(ts)) return '';
+  const MONTHS = ['января','февраля','марта','апреля','мая','июня',
+                  'июля','августа','сентября','октября','ноября','декабря'];
+  const d = new Date(ts);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const day = new Date(d); day.setHours(0, 0, 0, 0);
+  const diff = Math.round((day - today) / 86400000);
+  if (diff <= 0) return 'сегодня';
+  if (diff === 1) return 'завтра';
+  return d.getDate() + ' ' + MONTHS[d.getMonth()];
 }
 
 function startQuickSession() {
@@ -2891,12 +2972,21 @@ function startQuickSession() {
   const target = 10;
   const picked = [...dueOnly.slice(0, target)];
   if (picked.length < target) picked.push(...newOnly.slice(0, target - picked.length));
-  if (picked.length === 0) return;
+  if (picked.length === 0) {
+    showNothingDue(pool, currentTopic ? TOPIC_INFO[currentTopic] : currentLevel);
+    return;
+  }
   startSession(picked);
 }
 
 function startSession(pool, titleOverride, noShuffle) {
   if (!pool || pool.length === 0) return;
+  // Экран «всё повторено» мог их скрыть — вернуть.
+  const _pane = document.getElementById('portal-pane-nomen');
+  const _tabs = _pane && _pane.querySelector('.mode-tabs');
+  const _info = _pane && _pane.querySelector('.session-info');
+  if (_tabs) _tabs.style.display = '';
+  if (_info) _info.style.display = '';
   const ordered = noShuffle ? [...pool] : [...pool].sort(() => Math.random() - 0.5);
   session = {
     queue: ordered,
@@ -3363,6 +3453,8 @@ function toggleLearnedList() {
     renderSessionEnd,
     renderStats,
     renderTopics,
+    reviewAnyway,
+    showNothingDue,
     revealCard,
     saveSRS,
     setLevel,
@@ -3599,7 +3691,7 @@ document.querySelectorAll('.level-tab').forEach(btn => {
   btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_verben_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
-function buildSessionQueue(level, regular) {
+function buildSessionQueue(level, regular, ignoreDue) {
   const BATCH_SIZE = 10;
   const now = Date.now();
   const pool = CARDS.filter(c => c.level === level && c.regular === regular && !getWord(c.de).removed);
@@ -3617,7 +3709,9 @@ function buildSessionQueue(level, regular) {
   });
   scored.sort((a, b) => a.priority - b.priority);
   const eligible = scored.filter(x => x.isDue || x.isNew);
-  const take = eligible.length > 0 ? eligible : scored.slice(0, BATCH_SIZE);
+  // Раньше при пустом eligible молча брались первые 10 слов, будто срок наступил.
+  // Это ломало интервальное повторение. Теперь — пустая очередь и честный экран.
+  const take = eligible.length > 0 ? eligible : (ignoreDue ? scored : []);
   return take.slice(0, BATCH_SIZE).map(x => x.card.id);
 }
 
@@ -3656,12 +3750,47 @@ function restoreRemoved() {
   saveProgress();
   renderMenu();
 }
-function startSession(mode) {
+
+// Экран «ничего не ждёт повторения». Показывается вместо тихой подмены сроков.
+let _nothingDue = false;
+function renderNothingDue() {
+  _nothingDue = true;
+  const pool = CARDS.filter(c => c.level === currentLevel && c.regular === currentRegular && !getWord(c.de).removed);
+  document.getElementById('card-area').classList.add('hidden');
+  document.getElementById('done-area').classList.remove('hidden');
+  let when = '';
+  if (pool.length) {
+    const soonest = pool.slice().sort((a, b) => getWord(a.de).nextDue - getWord(b.de).nextDue)[0];
+    when = window.DT_formatDue(getWord(soonest.de).nextDue);
+  }
+  document.getElementById('done-title').textContent = 'Ничего не ждёт повторения';
+  document.getElementById('done-text').textContent =
+    (when ? 'Ближайшее слово вернётся ' + when + '. ' : '') +
+    'Интервал нужен, чтобы слово успело забыться — только тогда повторение работает.';
+  const repeat = document.getElementById('done-repeat');
+  const again = document.getElementById('done-again');
+  if (repeat) repeat.textContent = 'Повторить не дожидаясь срока';
+  if (again) again.style.display = 'none';
+}
+// Вернуть кнопкам обычный вид после выхода из этого состояния.
+function clearNothingDue() {
+  _nothingDue = false;
+  const repeat = document.getElementById('done-repeat');
+  const again = document.getElementById('done-again');
+  if (repeat) repeat.textContent = 'Повторить эти 10';
+  if (again) again.style.display = '';
+  const title = document.getElementById('done-title');
+  if (title) title.textContent = 'Сессия закончена';
+}
+
+function startSession(mode, ignoreDue) {
   if (mode === 'forms') mode = 'showDe';
   currentMode = mode;
   updateModeTabs();
-  queue = buildSessionQueue(currentLevel, currentRegular);
+  queue = buildSessionQueue(currentLevel, currentRegular, ignoreDue);
   queueIdx = 0;
+  if (queue.length === 0) { renderNothingDue(); return; }
+  clearNothingDue();
   document.getElementById('card-area').classList.remove('hidden');
   document.getElementById('done-area').classList.add('hidden');
   document.getElementById('typing-hint').style.display = (mode === 'type') ? 'block' : 'none';
@@ -3829,9 +3958,19 @@ document.getElementById('btn-master').addEventListener('click', () => applyRatin
 document.getElementById('next-btn').addEventListener('click', advance);
 document.getElementById('done-again').addEventListener('click', () => startSession(currentMode));
 document.getElementById('done-repeat').addEventListener('click', () => {
-  // Повторить ту же сессию: берём тот же очередь (те же 10)
-  if (typeof session !== 'undefined' && session.queue) startSession(session.queue.slice());
-  else startSession(currentMode);
+  // В состоянии «ничего не ждёт повторения» кнопка означает другое:
+  // пройти слова раньше срока — по осознанному выбору.
+  if (_nothingDue) { startSession(currentMode, true); return; }
+  // Повторить ту же очередь. Раньше здесь проверялась переменная session,
+  // которой в этом модуле не существует, — кнопка всегда давала новые слова.
+  if (queue && queue.length) {
+    queueIdx = 0;
+    document.getElementById('card-area').classList.remove('hidden');
+    document.getElementById('done-area').classList.add('hidden');
+    showNext();
+    return;
+  }
+  startSession(currentMode);
 });
 (function(){var b=document.getElementById('done-menu');if(b)b.addEventListener('click', closeTrainer);})();
 document.getElementById('global-reset').addEventListener('click', () => {
@@ -4159,7 +4298,7 @@ document.querySelectorAll('.level-tab').forEach(btn => {
   btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_adj_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
-function buildSessionQueue(level, regular) {
+function buildSessionQueue(level, regular, ignoreDue) {
   const BATCH_SIZE = 10;
   const now = Date.now();
   const pool = CARDS.filter(c => c.level === level && c.regular === regular && !getWord(c.de).removed);
@@ -4177,7 +4316,9 @@ function buildSessionQueue(level, regular) {
   });
   scored.sort((a,b) => a.priority - b.priority);
   const eligible = scored.filter(x => x.isDue || x.isNew);
-  const take = eligible.length > 0 ? eligible : scored.slice(0, BATCH_SIZE);
+  // Раньше при пустом eligible молча брались первые 10 слов, будто срок наступил.
+  // Это ломало интервальное повторение. Теперь — пустая очередь и честный экран.
+  const take = eligible.length > 0 ? eligible : (ignoreDue ? scored : []);
   return take.slice(0, BATCH_SIZE).map(x => x.card.id);
 }
 
@@ -4213,11 +4354,46 @@ function restoreRemoved() {
   saveProgress();
   renderMenu();
 }
-function startSession(mode) {
+
+// Экран «ничего не ждёт повторения». Показывается вместо тихой подмены сроков.
+let _nothingDue = false;
+function renderNothingDue() {
+  _nothingDue = true;
+  const pool = CARDS.filter(c => c.level === currentLevel && c.regular === currentRegular && !getWord(c.de).removed);
+  document.getElementById('adj-card-area').classList.add('hidden');
+  document.getElementById('adj-done-area').classList.remove('hidden');
+  let when = '';
+  if (pool.length) {
+    const soonest = pool.slice().sort((a, b) => getWord(a.de).nextDue - getWord(b.de).nextDue)[0];
+    when = window.DT_formatDue(getWord(soonest.de).nextDue);
+  }
+  document.getElementById('adj-done-title').textContent = 'Ничего не ждёт повторения';
+  document.getElementById('adj-done-text').textContent =
+    (when ? 'Ближайшее слово вернётся ' + when + '. ' : '') +
+    'Интервал нужен, чтобы слово успело забыться — только тогда повторение работает.';
+  const repeat = document.getElementById('adj-done-repeat');
+  const again = document.getElementById('adj-done-again');
+  if (repeat) repeat.textContent = 'Повторить не дожидаясь срока';
+  if (again) again.style.display = 'none';
+}
+// Вернуть кнопкам обычный вид после выхода из этого состояния.
+function clearNothingDue() {
+  _nothingDue = false;
+  const repeat = document.getElementById('adj-done-repeat');
+  const again = document.getElementById('adj-done-again');
+  if (repeat) repeat.textContent = 'Повторить эти 10';
+  if (again) again.style.display = '';
+  const title = document.getElementById('adj-done-title');
+  if (title) title.textContent = 'Сессия закончена';
+}
+
+function startSession(mode, ignoreDue) {
   currentMode = mode;
   updateModeTabs();
-  queue = buildSessionQueue(currentLevel, currentRegular);
+  queue = buildSessionQueue(currentLevel, currentRegular, ignoreDue);
   queueIdx = 0;
+  if (queue.length === 0) { renderNothingDue(); return; }
+  clearNothingDue();
   document.getElementById('adj-card-area').classList.remove('hidden');
   document.getElementById('adj-done-area').classList.add('hidden');
   showNext();
@@ -4379,9 +4555,19 @@ function applyRating(action) {
 document.getElementById('adj-back-btn').addEventListener('click', closeTrainer);
 document.getElementById('adj-done-again').addEventListener('click', () => startSession(currentMode));
 document.getElementById('adj-done-repeat').addEventListener('click', () => {
-  // Повторить ту же сессию: берём тот же очередь (те же 10)
-  if (typeof session !== 'undefined' && session.queue) startSession(session.queue.slice());
-  else startSession(currentMode);
+  // В состоянии «ничего не ждёт повторения» кнопка означает другое:
+  // пройти слова раньше срока — по осознанному выбору.
+  if (_nothingDue) { startSession(currentMode, true); return; }
+  // Повторить ту же очередь. Раньше здесь проверялась переменная session,
+  // которой в этом модуле не существует, — кнопка всегда давала новые слова.
+  if (queue && queue.length) {
+    queueIdx = 0;
+    document.getElementById('adj-card-area').classList.remove('hidden');
+    document.getElementById('adj-done-area').classList.add('hidden');
+    showNext();
+    return;
+  }
+  startSession(currentMode);
 });
 (function(){var b=document.getElementById('adj-done-menu');if(b)b.addEventListener('click', closeTrainer);})();
 document.querySelectorAll('#adj-trainer-screen .mode-tab').forEach(t => {
@@ -4768,7 +4954,7 @@ document.querySelectorAll('.level-tab').forEach(btn => {
   btn.addEventListener('click', () => { currentLevel = btn.dataset.level; try { localStorage.setItem('deutsch_klein_last_level', currentLevel); } catch(e){} renderMenu(); updateLearnedList(); });
 });
 
-function buildSessionQueue(level) {
+function buildSessionQueue(level, ignoreDue) {
   // Kleinwörter показывает слова всех уровней (A1/A2/B1) сразу
   const BATCH_SIZE = 10;
   const now = Date.now();
@@ -4787,7 +4973,8 @@ function buildSessionQueue(level) {
   });
   scored.sort((a,b) => a.priority - b.priority);
   const eligible = scored.filter(x => x.isDue || x.isNew);
-  const take = eligible.length>0 ? eligible : scored.slice(0, BATCH_SIZE);
+  // Раньше при пустом eligible молча брались первые 10 слов, будто срок наступил.
+  const take = eligible.length>0 ? eligible : (ignoreDue ? scored : []);
   return take.slice(0, BATCH_SIZE).map(x => x.card.id);
 }
 function openTrainer(level) {
@@ -4861,11 +5048,46 @@ function restoreRemoved() {
   renderMenu();
   updateLearnedList();
 }
-function startSession(mode) {
+
+// Экран «ничего не ждёт повторения». Показывается вместо тихой подмены сроков.
+let _nothingDue = false;
+function renderNothingDue() {
+  _nothingDue = true;
+  const pool = getFilteredCards().filter(c => !getWord(c.de).removed);
+  document.getElementById('klein-card-area').classList.add('hidden');
+  document.getElementById('klein-done-area').classList.remove('hidden');
+  let when = '';
+  if (pool.length) {
+    const soonest = pool.slice().sort((a, b) => getWord(a.de).nextDue - getWord(b.de).nextDue)[0];
+    when = window.DT_formatDue(getWord(soonest.de).nextDue);
+  }
+  document.getElementById('klein-done-title').textContent = 'Ничего не ждёт повторения';
+  document.getElementById('klein-done-text').textContent =
+    (when ? 'Ближайшее слово вернётся ' + when + '. ' : '') +
+    'Интервал нужен, чтобы слово успело забыться — только тогда повторение работает.';
+  const repeat = document.getElementById('klein-done-repeat');
+  const again = document.getElementById('klein-done-again');
+  if (repeat) repeat.textContent = 'Повторить не дожидаясь срока';
+  if (again) again.style.display = 'none';
+}
+// Вернуть кнопкам обычный вид после выхода из этого состояния.
+function clearNothingDue() {
+  _nothingDue = false;
+  const repeat = document.getElementById('klein-done-repeat');
+  const again = document.getElementById('klein-done-again');
+  if (repeat) repeat.textContent = 'Повторить эти 10';
+  if (again) again.style.display = '';
+  const title = document.getElementById('klein-done-title');
+  if (title) title.textContent = 'Сессия закончена';
+}
+
+function startSession(mode, ignoreDue) {
   currentMode = mode;
   updateModeTabs();
-  queue = buildSessionQueue(currentLevel);
+  queue = buildSessionQueue(currentLevel, ignoreDue);
   queueIdx = 0;
+  if (queue.length === 0) { renderNothingDue(); return; }
+  clearNothingDue();
   document.getElementById('klein-card-area').classList.remove('hidden');
   document.getElementById('klein-done-area').classList.add('hidden');
   showNext();
@@ -4968,9 +5190,19 @@ document.getElementById('klein-back-btn').addEventListener('click', closeTrainer
 document.getElementById('klein-start-btn').addEventListener('click', () => openTrainer(currentLevel));
 document.getElementById('klein-done-again').addEventListener('click', () => startSession(currentMode));
 document.getElementById('klein-done-repeat').addEventListener('click', () => {
-  // Повторить ту же сессию: берём тот же очередь (те же 10)
-  if (typeof session !== 'undefined' && session.queue) startSession(session.queue.slice());
-  else startSession(currentMode);
+  // В состоянии «ничего не ждёт повторения» кнопка означает другое:
+  // пройти слова раньше срока — по осознанному выбору.
+  if (_nothingDue) { startSession(currentMode, true); return; }
+  // Повторить ту же очередь. Раньше здесь проверялась переменная session,
+  // которой в этом модуле не существует, — кнопка всегда давала новые слова.
+  if (queue && queue.length) {
+    queueIdx = 0;
+    document.getElementById('klein-card-area').classList.remove('hidden');
+    document.getElementById('klein-done-area').classList.add('hidden');
+    showNext();
+    return;
+  }
+  startSession(currentMode);
 });
 (function(){var b=document.getElementById('klein-done-menu');if(b)b.addEventListener('click', closeTrainer);})();
 document.querySelectorAll('#klein-trainer-screen .mode-tab').forEach(t => {
