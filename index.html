@@ -740,28 +740,27 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
     .help-overlay-content .help-hr { border: none; border-top: 1px solid rgba(23,67,75,0.15); margin: 18px 0; }
     .help-overlay-content .help-note { font-size: 13px; color: rgba(23,67,75,0.7); font-style: italic; }
     .help-close-btn {
-      position: sticky;
-      top: 0;
-      float: right;
-      background: var(--surface);
-      border: 1px solid rgba(23,67,75,0.15);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      font-size: 22px;
-      font-weight: 500;
-      cursor: pointer;
-      color: var(--bg);
-      line-height: 1;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: -8px -8px 4px 8px;
-      z-index: 5;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      transition: background 0.15s;
-    }
+  position: sticky;
+  top: -26px;
+  margin: -26px -24px 4px auto;
+  background: var(--surface);
+  border: 1px solid rgba(23,67,75,0.15);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--bg);
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.15s;
+}
     .help-close-btn:hover { background: var(--danger, #B93D33); color: #fff; border-color: var(--danger, #B93D33); }
 
     /* --- Раскрывающийся блок статистики --- */
@@ -1099,6 +1098,12 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   margin-bottom: 16px;
   font-size: 17px;
   font-weight: 500;
+  position: sticky;
+  top: -24px;
+  margin: -24px -24px 12px;
+  padding: 16px 24px 12px;
+  background: var(--bg, #21484d);
+  z-index: 5;
 }
 .how-modal-close {
   background: transparent;
@@ -1107,9 +1112,14 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
-  padding: 4px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   font-family: inherit;
+  flex-shrink: 0;
 }
 .how-modal-close:hover { background: rgba(237,231,216,0.10); }
 .how-lead {
@@ -1309,6 +1319,18 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 @media (max-width: 330px) {
   
 }
+
+/* Подписи в шапке тренажёра убраны: строка «слева Назад — справа название темы»
+   ломала симметрию, глаз ждал справа кнопку «Вперёд».
+   Элементы оставлены в DOM — в них пишет скрипт. */
+#trainer-title,
+#chunk-label,
+#adj-chunk-label,
+#klein-chunk-label { display: none; }
+
+.app-nomen .trainer-head,
+.app-verben .trainer-head,
+.trainer-head { justify-content: flex-start; }
 </style>
 </head>
 <body>
@@ -2614,8 +2636,11 @@ function updateSRS(id, action) {
     s.removed = true;
     s.level = 5;
   } else if (action === 'known') {
-    // "Уже знаю" — сразу 5★, но не removed (в списке выученных, вернётся по SRS через 30 дней)
-    s.removed = false;
+    // "Знаю без тренировки" — сразу 5★ и убрать из показа.
+    // Слово попадает в «Мои выученные слова». Вернуть его в тренировку
+    // можно только вручную, кнопкой в этом списке (returnToTraining).
+    // Раньше стояло removed = false, и слово возвращалось само через 30 дней.
+    s.removed = true;
     s.level = 5;
   } else if (action === 'wrong') {
     s.level = Math.max(0, s.level - 1);
@@ -2628,8 +2653,8 @@ function updateSRS(id, action) {
   s.due = Date.now() + Math.round(intervalMin * fuzz) * 60000;
   srs[id] = s;
   saveSRS(srs);
+  if (typeof updateLearnedList === 'function') updateLearnedList();
   return s;
-  updateLearnedList();
 }
 
 // ============ FILTERS ============
@@ -3235,15 +3260,23 @@ function repeatSession() {
   startSession(session.queue.map(x => x));
 }
 function nextSession() {
-  // Взять следующие 10 слов из очереди (не тех же, а новых) 
-  const scope = currentTopic ? NOUNS.filter(n => n.level === currentLevel && n.topic === currentTopic) : NOUNS.filter(n => n.level === currentLevel);
+  // Следующие 10 слов. Отбор такой же, как в startQuickSession:
+  // сначала те, у кого подошёл срок повторения, потом ещё не показанные.
+  // Раньше здесь брались слова подряд из списка — и «Уже знаю», отложенные
+  // и выученные на 5★ возвращались в каждую следующую десятку.
+  const scope = currentTopic ? filterByTopic(currentLevel, currentTopic) : filterByLevel(currentLevel);
   // session.queue содержит объекты — собираем множество их id для проверки
   const usedIds = new Set(session.queue.map(n => n.id));
   const remaining = scope.filter(n => !usedIds.has(n.id));
-  if (remaining.length === 0) { backHome(); return; }
+  const now = Date.now();
+  const dueOnly = remaining.filter(n => { const s = getSRS(n.id); return s.seen > 0 && s.due <= now; });
+  const newOnly = remaining.filter(n => getSRS(n.id).seen === 0);
+  const target = 10;
+  const picked = [...dueOnly.slice(0, target)];
+  if (picked.length < target) picked.push(...newOnly.slice(0, target - picked.length));
+  if (picked.length === 0) { backHome(); return; }
   // Передаём объекты, не id — startSession использует .sg/.ru/.art напрямую
-  const nextQueue = remaining.slice(0, 10);
-  startSession(nextQueue);
+  startSession(picked);
 }
 
 // ============ INIT ============
