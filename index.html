@@ -904,6 +904,9 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 }
 /* Сетка обязана занимать всю ширину контейнера, иначе схлопывается */
 .landing-bento { width: 100%; }
+/* Плашка выученных слов — всегда последняя, во всю ширину строки,
+   независимо от числа колонок сетки */
+.landing-tile-wide { grid-column: 1 / -1; }
 .landing-header, .landing-hint { width: 100%; text-align: center; }
 .landing-topbar {
   display: flex;
@@ -1323,6 +1326,10 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
           <div class="lt-ru">Как это работает</div>
           <div class="lt-de">Прочитай перед началом</div>
         </button>
+      <button class="landing-tile landing-tile-wide" onclick="openLearnedView()">
+        <div class="lt-ru">Мои выученные слова</div>
+        <div class="lt-de">Gelernte Wörter</div>
+      </button>
       </div>
     </div>
 
@@ -1437,7 +1444,6 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
     <button class="btn-home-corner" onclick="returnToLanding()" title="На главную" aria-label="На главную">⌂</button>
       <h1>Существительные <span class="h1-de">(Nomen)</span></h1>
     <div class="page-header-actions">
-      <button class="learned-badge" id="nomen-learned-badge" onclick="openLearnedView('nomen')" title="Мои выученные слова"><span class="check-mark">✓</span> Выученные</button>
       <button class="module-search-icon" onclick="toggleNomenSearch()" aria-label="Найти слово" title="Найти слово">🔍</button>
     </div>
   </div>
@@ -1533,7 +1539,6 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
       <button class="btn-home-corner" onclick="returnToLanding()" title="На главную" aria-label="На главную">⌂</button>
       <h1>Глаголы <span class="h1-de">(Verben)</span></h1>
       <div class="page-header-actions">
-        <button class="learned-badge" id="verben-learned-badge" onclick="openLearnedView('verben')" title="Мои выученные глаголы"><span class="check-mark">✓</span> Выученные</button>
           <button class="module-search-icon" onclick="toggleVerbSearch()" aria-label="Найти слово" title="Найти слово">🔍</button>
       </div>
     </div>
@@ -1695,7 +1700,6 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
     <button class="btn-home-corner" onclick="returnToLanding()" title="На главную" aria-label="На главную">⌂</button>
       <h1>Прилагательные <span class="h1-de">(Adjektive)</span></h1>
     <div class="page-header-actions">
-      <button class="learned-badge" id="adj-learned-badge" onclick="openLearnedView('adj')" title="Мои выученные прилагательные"><span class="check-mark">✓</span> Выученные</button>
       <button class="module-search-icon" onclick="toggleAdjSearch()" aria-label="Найти слово" title="Найти слово">🔍</button>
     </div>
   </div>
@@ -1833,7 +1837,6 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
     <button class="btn-home-corner" onclick="returnToLanding()" title="На главную" aria-label="На главную">⌂</button>
       <h1 id="klein-title">Наречия <span class="h1-de">(Adverbien)</span></h1>
     <div class="page-header-actions">
-      <button class="learned-badge" id="klein-learned-badge" onclick="openLearnedView((window.Kleinwoerter && window.Kleinwoerter.getCategoryMode && window.Kleinwoerter.getCategoryMode() === 'funktionswoerter') ? 'funk' : 'adv')" title="Мои выученные слова"><span class="check-mark">✓</span> Выученные</button>
       <button class="module-search-icon" onclick="toggleKleinSearch()" aria-label="Найти слово" title="Найти слово">🔍</button>
     </div>
   </div>
