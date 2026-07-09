@@ -1165,18 +1165,58 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 /* --- Экран «Мои выученные слова» — мета-портал + список модуля --- */
 
 /* Кнопка экспорта в шапке (используется как на портале, так и на под-странице модуля) */
-.learned-export-header-btn {
+/* --- Шапка экрана «Мои выученные»: одна строка, слева ‹, справа Экспорт --- */
+.learned-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  min-height: 48px;
+  border-bottom: 1px solid rgba(237,231,216,0.15);
+}
+.learned-back {
   background: transparent;
-  border: 1px solid rgba(237,231,216,0.30);
+  border: none;
   color: var(--text-on-bg, #ede7d8);
-  border-radius: 999px;
-  padding: 5px 12px;
+  font-size: 24px;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0;
+  font-family: inherit;
+}
+.learned-back:hover { background: rgba(237,231,216,0.08); }
+.learned-topbar-title {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-on-bg, #ede7d8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+.learned-export {
+  background: transparent;
+  border: 1px solid rgba(237,231,216,0.35);
+  color: var(--text-on-bg, #ede7d8);
+  border-radius: 8px;
+  padding: 6px 12px;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
+  min-height: 34px;
 }
-.learned-export-header-btn:hover { background: rgba(237,231,216,0.08); }
+.learned-export:hover { background: rgba(237,231,216,0.08); }
+.learned-export.hidden { display: none; }
 
 /* --- Мета-портал: 5 плашек модулей, компактно и в центре --- */
 .learned-portal-view {
@@ -1225,51 +1265,66 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   color: rgba(23,67,75,0.65);
 }
 
-/* --- Под-страница списка модуля --- */
+/* --- Под-страница списка модуля: карточки с номером и стрелкой возврата --- */
 .learned-list-view {
-  margin: 16px auto 0;
+  margin: 12px auto 0;
   max-width: 460px;
-}
-.learned-list-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--text-on-bg, #ede7d8);
-  margin: 0 0 12px;
-  text-align: center;
+  padding: 0 8px;
 }
 .learned-list-body {
-  background: var(--surface, #EDE7D8);
-  border: 1px solid var(--border, rgba(23,67,75,0.15));
-  border-radius: 12px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .learned-list-item {
+  background: var(--surface, #EDE7D8);
+  border-radius: 10px;
+  padding: 12px 14px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 24px 1fr 40px;
   gap: 12px;
-  padding: 9px 14px;
-  border-bottom: 1px solid rgba(23,67,75,0.08);
-  align-items: baseline;
+  align-items: center;
 }
-.learned-list-item:last-child { border-bottom: none; }
+.learned-list-item .lli-num {
+  font-size: 12px;
+  color: rgba(23,67,75,0.50);
+  text-align: right;
+}
+.learned-list-item .lli-word { min-width: 0; }
 .learned-list-item .lli-de {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text, #17434B);
-  text-align: right;
-  padding-right: 6px;
+  line-height: 1.25;
 }
 .learned-list-item .lli-ru {
   font-size: 13px;
-  color: rgba(23,67,75,0.70);
-  text-align: left;
-  padding-left: 8px;
-  border-left: 1px solid rgba(23,67,75,0.15);
+  color: rgba(23,67,75,0.65);
+  line-height: 1.3;
+  margin-top: 2px;
 }
+.learned-list-item .lli-return {
+  background: transparent;
+  border: none;
+  color: #1D6773;
+  font-size: 20px;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0;
+  font-family: inherit;
+}
+.learned-list-item .lli-return:hover { background: rgba(29,103,115,0.08); }
+.learned-list-item .lli-return:active { transform: scale(0.92); }
 .learned-list-empty {
   padding: 22px 14px;
   font-size: 14px;
-  color: rgba(23,67,75,0.55);
+  color: rgba(237,231,216,0.65);
   font-style: italic;
   text-align: center;
 }
@@ -1277,9 +1332,10 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   .learned-portal-view { gap: 8px; max-width: 320px; }
   .learned-portal-tile { padding: 12px 10px; min-height: 60px; font-size: 14px; }
   .learned-portal-tile .lp-title { font-size: 14px; }
-  .learned-list-item { padding: 8px 10px; }
-  .learned-list-item .lli-de { font-size: 13px; }
+  .learned-list-item { padding: 10px 12px; grid-template-columns: 20px 1fr 36px; gap: 10px; }
+  .learned-list-item .lli-de { font-size: 14px; }
   .learned-list-item .lli-ru { font-size: 12px; }
+  .learned-list-item .lli-return { width: 32px; height: 32px; font-size: 18px; }
 }
 
 
@@ -2067,45 +2123,36 @@ window.DT_formatDue = function(ts) {
 <div class="app-verben">
 <div class="container">
 <div id="learned-home">
-  <div class="page-header">
-    <button class="btn-home-corner" onclick="returnToLanding()" title="На главную" aria-label="На главную">⌂</button>
-    <button class="learned-back-btn hidden" id="learned-back-btn" onclick="learnedBackNav()" title="Назад">‹ Назад</button>
-      <h1 id="learned-page-title">Мои выученные слова</h1>
-    <div class="page-header-actions">
-      <button class="learned-export-header-btn" onclick="exportLearnedAll()" title="Экспорт всех выученных">📥 Экспорт</button>
-    </div>
+  <div class="learned-topbar">
+    <button class="learned-back" onclick="learnedBackNav()" aria-label="Назад">‹</button>
+    <div class="learned-topbar-title" id="learned-page-title">Мои выученные</div>
+    <button class="learned-export" id="learned-export-btn" onclick="exportLearnedAll()">Экспорт</button>
   </div>
-
-  <button class="help-banner" onclick="showHelp()" title="Открыть подсказку по этой странице">
-    <span class="help-banner-icon">💡</span>
-    <span class="help-banner-text">Подсказка по этой странице</span>
-  </button>
 
   <div class="learned-portal-view" id="learned-portal-view">
     <button class="learned-portal-tile" data-key="nomen" onclick="openLearnedList('nomen')">
       <span class="lp-title">Существительные</span>
-      <span class="lp-count" id="lp-count-nomen">· 0</span>
+      <span class="lp-count" id="lp-count-nomen">0 слов</span>
     </button>
     <button class="learned-portal-tile" data-key="verben" onclick="openLearnedList('verben')">
       <span class="lp-title">Глаголы</span>
-      <span class="lp-count" id="lp-count-verben">· 0</span>
+      <span class="lp-count" id="lp-count-verben">0 слов</span>
     </button>
     <button class="learned-portal-tile" data-key="adj" onclick="openLearnedList('adj')">
       <span class="lp-title">Прилагательные</span>
-      <span class="lp-count" id="lp-count-adj">· 0</span>
+      <span class="lp-count" id="lp-count-adj">0 слов</span>
     </button>
     <button class="learned-portal-tile" data-key="adv" onclick="openLearnedList('adv')">
       <span class="lp-title">Наречия</span>
-      <span class="lp-count" id="lp-count-adv">· 0</span>
+      <span class="lp-count" id="lp-count-adv">0 слов</span>
     </button>
     <button class="learned-portal-tile" data-key="funk" onclick="openLearnedList('funk')">
       <span class="lp-title">Служебные</span>
-      <span class="lp-count" id="lp-count-funk">· 0</span>
+      <span class="lp-count" id="lp-count-funk">0 слов</span>
     </button>
   </div>
 
   <div class="learned-list-view hidden" id="learned-list-view">
-    <h2 class="learned-list-title" id="learned-list-title">Выученные слова</h2>
     <div class="learned-list-body" id="learned-list-body"></div>
   </div>
 </div>
@@ -2168,21 +2215,39 @@ function openLearnedView(focus) {
   if (pane) pane.scrollTop = 0;
 }
 
+// Русское склонение: N слов / N слово / N слова
+function _wordsRu(n) {
+  const m100 = n % 100;
+  if (m100 >= 11 && m100 <= 14) return n + ' слов';
+  const m10 = n % 10;
+  if (m10 === 1) return n + ' слово';
+  if (m10 >= 2 && m10 <= 4) return n + ' слова';
+  return n + ' слов';
+}
+// Название категории для шапки списка
+const _LEARNED_CAT_TITLES = {
+  nomen:  'Существительные',
+  verben: 'Глаголы',
+  adj:    'Прилагательные',
+  adv:    'Наречия',
+  funk:   'Служебные'
+};
+
 function _showLearnedPortalView() {
   document.getElementById('learned-portal-view').classList.remove('hidden');
   document.getElementById('learned-list-view').classList.add('hidden');
-  document.getElementById('learned-page-title').textContent = 'Мои выученные слова';
-  const backBtn = document.getElementById('learned-back-btn');
-  if (backBtn) {
-    // На портале «‹ Назад» ведёт в модуль только если пришли из модуля
-    const from = window._learnedFrom;
-    if (from && _LEARNED_MODULE_LABELS[from]) {
-      backBtn.textContent = '‹ Назад к ' + _LEARNED_MODULE_LABELS[from];
-      backBtn.classList.remove('hidden');
-    } else {
-      backBtn.classList.add('hidden');
-    }
-  }
+  // Заголовок общего экрана — «Мои выученные · N» (или без числа, если пусто)
+  const data = _collectLearned();
+  const total = data.nomen.length + data.verben.length + data.adj.length + data.adv.length + data.funk.length;
+  const titleEl = document.getElementById('learned-page-title');
+  if (titleEl) titleEl.textContent = total > 0 ? ('Мои выученные · ' + total) : 'Мои выученные';
+  // Экспорт доступен только на общем экране
+  const expBtn = document.getElementById('learned-export-btn');
+  if (expBtn) expBtn.classList.toggle('hidden', total === 0);
+  // Обновить счётчики плашек
+  renderLearnedPortal();
+  const pane = document.getElementById('portal-pane-learned');
+  if (pane) pane.scrollTop = 0;
 }
 
 function openLearnedList(key) {
@@ -2190,26 +2255,28 @@ function openLearnedList(key) {
   window._learnedCurrentKey = key;
   document.getElementById('learned-portal-view').classList.add('hidden');
   document.getElementById('learned-list-view').classList.remove('hidden');
-  document.getElementById('learned-page-title').textContent = 'Мои выученные слова';
-  document.getElementById('learned-list-title').textContent = _LEARNED_LIST_TITLES[key];
+  // Заголовок — «Существительные · 12»
+  const data = _collectLearned();
+  const n = (data[key] || []).length;
+  const titleEl = document.getElementById('learned-page-title');
+  if (titleEl) titleEl.textContent = _LEARNED_CAT_TITLES[key] + ' · ' + n;
+  // Экспорт скрыт внутри категории
+  const expBtn = document.getElementById('learned-export-btn');
+  if (expBtn) expBtn.classList.add('hidden');
   renderLearnedList(key);
-  const backBtn = document.getElementById('learned-back-btn');
-  if (backBtn) {
-    backBtn.textContent = '‹ К списку разделов';
-    backBtn.classList.remove('hidden');
-  }
-  window.scrollTo({top:0, behavior:'auto'});
+  const pane = document.getElementById('portal-pane-learned');
+  if (pane) pane.scrollTop = 0;
 }
 
-// Кнопка «‹ Назад» — если внутри списка модуля, возврат к порталу;
-// если на портале, возврат в модуль (если пришли оттуда)
+// «‹»: из списка категории — назад к порталу; с портала — на лендинг.
+// Ровно один шаг назад по стеку, без ветвления «пришли из модуля / с главной».
 function learnedBackNav() {
   if (window._learnedCurrentKey) {
     window._learnedCurrentKey = null;
     _showLearnedPortalView();
     return;
   }
-  learnedBackToModule();
+  returnToLanding();
 }
 
 function learnedBackToModule() {
@@ -2238,7 +2305,8 @@ function learnedBackToModule() {
 }
 
 function _collectLearned() {
-  // Возвращает {nomen, verben, adj, adv, funk} — массивы {de, ru, sortKey}
+  // Возвращает {nomen, verben, adj, adv, funk} — массивы {de, ru, id, module, sortKey}
+  // id и module нужны кнопке возврата в тренировку (см. returnWordToTraining)
   const out = {nomen:[], verben:[], adj:[], adv:[], funk:[]};
   try {
     if (window.Nomen && window.Nomen.NOUNS && window.Nomen.getSRS) {
@@ -2246,7 +2314,12 @@ function _collectLearned() {
         .filter(n => (window.Nomen.getSRS(n.id).level || 0) >= 5)
         .map(n => {
           const pl = (n.pl && n.pl !== n.sg) ? (', ' + n.pl) : '';
-          return {de: (n.art ? n.art + ' ' : '') + n.sg + pl, ru: n.ru || '', sortKey: n.sg};
+          return {
+            de: (n.art ? n.art + ' ' : '') + n.sg + pl,
+            ru: n.ru || '',
+            id: n.id, module: 'nomen',
+            sortKey: n.sg
+          };
         });
     }
   } catch(e){}
@@ -2254,14 +2327,14 @@ function _collectLearned() {
     if (window.Verben && window.Verben.CARDS && window.Verben.getWord) {
       out.verben = window.Verben.CARDS
         .filter(c => { const w = window.Verben.getWord(c.de); return w && w.stars >= 5; })
-        .map(c => ({de: c.de, ru: c.ru || '', sortKey: c.de}));
+        .map(c => ({de: c.de, ru: c.ru || '', id: c.de, module: 'verben', sortKey: c.de}));
     }
   } catch(e){}
   try {
     if (window.Adjektive && window.Adjektive.CARDS && window.Adjektive.getWord) {
       out.adj = window.Adjektive.CARDS
         .filter(c => { const w = window.Adjektive.getWord(c.de); return w && w.stars >= 5; })
-        .map(c => ({de: c.de, ru: c.ru || '', sortKey: c.de}));
+        .map(c => ({de: c.de, ru: c.ru || '', id: c.de, module: 'adj', sortKey: c.de}));
     }
   } catch(e){}
   try {
@@ -2269,9 +2342,9 @@ function _collectLearned() {
       const allKlein = window.Kleinwoerter.CARDS
         .filter(c => { const w = window.Kleinwoerter.getWord(c.de); return w && w.stars >= 5; });
       out.adv = allKlein.filter(c => c.pos === 'adverb')
-        .map(c => ({de: c.de, ru: c.ru || '', sortKey: c.de}));
+        .map(c => ({de: c.de, ru: c.ru || '', id: c.de, module: 'klein', sortKey: c.de}));
       out.funk = allKlein.filter(c => c.pos !== 'adverb')
-        .map(c => ({de: c.de, ru: c.ru || '', sortKey: c.de}));
+        .map(c => ({de: c.de, ru: c.ru || '', id: c.de, module: 'klein', sortKey: c.de}));
     }
   } catch(e){}
   const sortDE = (a, b) => a.sortKey.localeCompare(b.sortKey, 'de');
@@ -2296,7 +2369,7 @@ function renderLearnedPortal() {
     const countEl = document.getElementById('lp-count-' + key);
     const tileEl = document.querySelector('.learned-portal-tile[data-key="' + key + '"]');
     const n = data[key].length;
-    if (countEl) countEl.textContent = '· ' + n;
+    if (countEl) countEl.textContent = _wordsRu(n);
     if (tileEl) tileEl.classList.toggle('disabled', n === 0);
   });
 }
@@ -2310,10 +2383,36 @@ function renderLearnedList(key) {
     body.innerHTML = '<div class="learned-list-empty">Пока пусто</div>';
     return;
   }
-  body.innerHTML = words.map(function(w){
-    const ru = w.ru ? '<span class="lli-ru">' + _escLW(w.ru) + '</span>' : '<span class="lli-ru"></span>';
-    return '<div class="learned-list-item"><span class="lli-de">' + _escLW(w.de) + '</span>' + ru + '</div>';
+  body.innerHTML = words.map(function(w, i){
+    const num = i + 1;
+    const ru = w.ru ? '<div class="lli-ru">' + _escLW(w.ru) + '</div>' : '';
+    // id может содержать кавычки/апострофы (у существительных типа «der_Wald» — не может, но у Verben/Adj/Klein — de-строка)
+    const idAttr = _escLW(w.id);
+    return '<div class="learned-list-item">' +
+      '<div class="lli-num">' + num + '</div>' +
+      '<div class="lli-word"><div class="lli-de">' + _escLW(w.de) + '</div>' + ru + '</div>' +
+      '<button class="lli-return" onclick="returnWordToTraining(\'' + w.module + '\', \'' + idAttr + '\')" title="Вернуть в тренировку" aria-label="Вернуть в тренировку">↻</button>' +
+    '</div>';
   }).join('');
+}
+
+// Вернуть одно слово в тренировку (level=0, removed=false).
+// Вызывается из кнопки «↻» на карточке в списке.
+function returnWordToTraining(mod, id) {
+  try {
+    const modApi = { nomen: window.Nomen, verben: window.Verben, adj: window.Adjektive, klein: window.Kleinwoerter }[mod];
+    if (!modApi || typeof modApi.returnToTraining !== 'function') return;
+    modApi.returnToTraining(id);
+  } catch(e) { return; }
+  // Перерисовать текущий список и обновить заголовок с новым числом
+  const key = window._learnedCurrentKey;
+  if (key) {
+    const data = _collectLearned();
+    const n = (data[key] || []).length;
+    const titleEl = document.getElementById('learned-page-title');
+    if (titleEl) titleEl.textContent = _LEARNED_CAT_TITLES[key] + ' · ' + n;
+    renderLearnedList(key);
+  }
 }
 
 function exportLearnedAll() {
@@ -4145,6 +4244,7 @@ function toggleLearnedList() {
     startSession,
     setMode,
     restoreRemoved,
+    returnToTraining,
     updateModeTabs,
     verbDoSearch,
     openSpecificVerb,
@@ -4704,6 +4804,7 @@ function toggleLearnedList() {
     updateModeTabs,
     setMode,
     restoreRemoved,
+    returnToTraining,
     startSession,
     advance,
     prevCardAdj,
@@ -5289,6 +5390,7 @@ updateLearnedList();
     updateModeTabs,
     setMode,
     restoreRemoved,
+    returnToTraining,
     startSession,
     advance,
     prevCardKlein,
