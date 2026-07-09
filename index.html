@@ -1018,7 +1018,9 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 .landing-tile-accent:hover { background: #24788a; }
 
 @media (max-width: 500px) {
-  .landing-bento { grid-template-columns: 1fr; }
+  /* Плашки модулей остаются в две колонки: на 360-430 px они помещаются свободно.
+     Раньше здесь стояло grid-template-columns: 1fr — на телефоне всё вытягивалось в столбик. */
+  .landing-bento { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .landing-topbar { flex-direction: row; align-items: center; }
   .landing-topbar .landing-header { font-size: 16px; }
   .landing-topbar .search-corner-btn { font-size: 12px; padding: 6px 10px; }
@@ -1260,6 +1262,11 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 /* Строка оценки: на очень узких экранах в две строки, а не в обрез */
 @media (max-width: 340px) {
   .app-nomen .grade-row, .app-verben .grade-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Одна колонка только на очень узких экранах */
+@media (max-width: 330px) {
+  .landing-bento { grid-template-columns: 1fr; }
 }
 </style>
 </head>
