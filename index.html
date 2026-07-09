@@ -58,7 +58,14 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 .portal-pane { flex:1; overflow-y:auto; display:none; }
 .portal-pane.active { display:block; }
 
-#portal-landing { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; position:relative; }
+#portal-landing {
+  display:flex; flex-direction:column;
+  /* Было align-items:center — .landing-bento сжимался по содержимому, сетка разваливалась.
+     Было justify-content:center — заголовок обрезался сверху, когда контент выше экрана. */
+  align-items:stretch;
+  justify-content:flex-start;
+  min-height:100%; padding:20px; position:relative;
+}
 #portal-landing h1 { font-size:26px; font-weight:500; margin:0 0 6px; color:var(--text-on-bg); }
 #portal-landing .accent-bar { width:40px; height:3px; background:var(--danger); margin:0 0 24px; border-radius:2px; }
 
@@ -895,6 +902,9 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
   margin: 0 auto;
   padding: 20px 16px 60px;
 }
+/* Сетка обязана занимать всю ширину контейнера, иначе схлопывается */
+.landing-bento { width: 100%; }
+.landing-header, .landing-hint { width: 100%; text-align: center; }
 .landing-topbar {
   display: flex;
   justify-content: space-between;
