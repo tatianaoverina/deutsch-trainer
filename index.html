@@ -1387,6 +1387,12 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100%; font-fa
 .app-nomen .trainer-head,
 .app-verben .trainer-head,
 .trainer-head { justify-content: flex-start; }
+/* --- Цветовое кодирование родов существительных (GRAMMAR_REFERENCE §4) --- */
+/* Селектор `.gender-XXX .article` перекрывает .article {color:var(--text-muted)} */
+/* .diff (3 класса в .app-nomen .word-main) остаётся красным — специфичность выше */
+.gender-der, .gender-der .article { color: #2B5F7E; }
+.gender-die, .gender-die .article { color: #6B3D6B; }
+.gender-das, .gender-das .article { color: #5C3B1E; }
 </style>
 </head>
 <body>
@@ -2318,6 +2324,7 @@ function _collectLearned() {
             de: (n.art ? n.art + ' ' : '') + n.sg + pl,
             ru: n.ru || '',
             id: n.id, module: 'nomen',
+            art: n.art,
             sortKey: n.sg
           };
         });
@@ -2388,9 +2395,13 @@ function renderLearnedList(key) {
     const ru = w.ru ? '<div class="lli-ru">' + _escLW(w.ru) + '</div>' : '';
     // id может содержать кавычки/апострофы (у существительных типа «der_Wald» — не может, но у Verben/Adj/Klein — de-строка)
     const idAttr = _escLW(w.id);
+    // Существительные окрашиваются в цвет исходного рода (см. GRAMMAR_REFERENCE §4)
+    const deHTML = w.art
+      ? '<span class="gender-' + w.art + '">' + _escLW(w.de) + '</span>'
+      : _escLW(w.de);
     return '<div class="learned-list-item">' +
       '<div class="lli-num">' + num + '</div>' +
-      '<div class="lli-word"><div class="lli-de">' + _escLW(w.de) + '</div>' + ru + '</div>' +
+      '<div class="lli-word"><div class="lli-de">' + deHTML + '</div>' + ru + '</div>' +
       '<button class="lli-return" onclick="returnWordToTraining(\'' + w.module + '\', \'' + idAttr + '\')" title="Вернуть в тренировку" aria-label="Вернуть в тренировку">↻</button>' +
     '</div>';
   }).join('');
@@ -2823,7 +2834,7 @@ function formatPlural(sg, pl) {
 // Ед.ч. на первой строке, мн.ч. на второй — раздельно, чтобы артикль не сбивался
 function formatBothForms(noun, showTranslation) {
   const sgRu = (showTranslation && noun.ru) ? ` — ${escapeHTML(noun.ru)}` : '';
-  const sgLine = `<div class="form-line">${articleHTML(noun.art)}&nbsp;${escapeHTML(noun.sg)}<span class="form-ru">${sgRu}</span></div>`;
+  const sgLine = `<div class="form-line"><span class="gender-${noun.art}">${articleHTML(noun.art)}&nbsp;${escapeHTML(noun.sg)}</span><span class="form-ru">${sgRu}</span></div>`;
   const numNote = (showTranslation && noun.num_note) ? `<div class="num-asymmetry-note">⚠ ${escapeHTML(noun.num_note)}</div>` : '';
   const genderNote = (showTranslation && noun.gender_pair) ? `<div class="gender-pair-note">${escapeHTML(noun.gender_pair)}</div>` : '';
   if (noun.code === 'pl_only') {
@@ -2842,7 +2853,7 @@ function formatBothForms(noun, showTranslation) {
   if (showTranslation) {
     plRu = noun.ru_pl ? ` — ${escapeHTML(noun.ru_pl)}` : ' — <span class="ru-unverified">перевод мн.ч. не проверен</span>';
   }
-  const plLine = showTranslation ? `<div class="form-line">${articleHTML('die')}&nbsp;${formatPlural(noun.sg, noun.pl)}<span class="form-ru">${plRu}</span></div>` : '';
+  const plLine = showTranslation ? `<div class="form-line"><span class="gender-${noun.art}">${articleHTML('die')}&nbsp;${formatPlural(noun.sg, noun.pl)}</span><span class="form-ru">${plRu}</span></div>` : '';
   return sgLine + plLine + numNote + genderNote;
 }
 
@@ -2959,7 +2970,7 @@ function doSearch(query, resultsBoxId) {
   const fuzzyNote = fuzzy ? '<div class="search-fuzzy-note">Похожие варианты (точных совпадений нет)</div>' : '';
   box.innerHTML = fuzzyNote + results.map(n => `
     <div class="search-result" onclick="Nomen.openSearchResult('${n.id}')">
-      <span class="sr-word">${n.art} ${escapeHTML(n.sg)}</span><span class="sr-level">${n.level}</span>
+      <span class="sr-word gender-${n.art}">${n.art} ${escapeHTML(n.sg)}</span><span class="sr-level">${n.level}</span>
       <div class="sr-ru">${n.ru ? escapeHTML(n.ru) : '—'}</div>
     </div>
   `).join('');
@@ -3354,7 +3365,11 @@ function renderFeedbackRows(rows, noun, overall) {
   const title = overall === 'yes' ? 'Верно' : (overall === 'almost' ? 'Почти' : 'Проверьте формы');
   const rowsHTML = rows.map(r => {
     const mark = r.level === 'yes' ? '✓' : (r.level === 'almost' ? '~' : '✗');
-    return `<div>${mark} ${r.label}: правильно — ${escapeHTML(r.correct)}</div>`;
+    const isNounRow = (r.label === 'Ед.ч.' || r.label === 'Мн.ч.') && noun && noun.art;
+    const correctHTML = isNounRow
+      ? `<span class="gender-${noun.art}">${escapeHTML(r.correct)}</span>`
+      : escapeHTML(r.correct);
+    return `<div>${mark} ${r.label}: правильно — ${correctHTML}</div>`;
   }).join('');
   return `<div class="feedback ${cls}"><strong>${title}</strong>${rowsHTML}</div>`;
 }
@@ -3690,8 +3705,10 @@ function fmtP2(p2) {
   return '<span class="aux-haben">hat</span> <span class="fvalue">' + p2 + '</span>';
 }
 function fmtFormsStrip(forms) {
-  return '<div><span class="flabel">Präsens</span><span class="fvalue">' + forms[0] + '</span></div>' +
-         '<div><span class="flabel">Präteritum</span><span class="fvalue">' + forms[1] + '</span></div>' +
+  // Präsens 3 sg (forms[0]) намеренно не отображается — см. HANDOFF К5.
+  // Словарная форма (инфинитив) уже на карточке; для A1 важны Präteritum и Perfekt.
+  // Поле forms[0] в данных сохранено, чтобы вернуть отображение было легко.
+  return '<div><span class="flabel">Präteritum</span><span class="fvalue">' + forms[1] + '</span></div>' +
          '<div><span class="flabel">Perfekt</span>' + fmtP2(forms[2]) + '</div>';
 }
 function markAux(text) {
